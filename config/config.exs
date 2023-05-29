@@ -7,17 +7,17 @@
 # General application configuration
 import Config
 
-config :kodi_straga,
-  ecto_repos: [KodiStraga.Repo]
+config :zulip_za_sirotinju,
+  ecto_repos: [ZulipZaSirotinju.Repo]
 
 # Configures the endpoint
-config :kodi_straga, KodiStragaWeb.Endpoint,
+config :zulip_za_sirotinju, ZulipZaSirotinjuWeb.Endpoint,
   url: [host: "localhost"],
   render_errors: [
-    formats: [json: KodiStragaWeb.ErrorJSON],
+    formats: [json: ZulipZaSirotinjuWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: KodiStraga.PubSub,
+  pubsub_server: ZulipZaSirotinju.PubSub,
   live_view: [signing_salt: "CQU6u+//"]
 
 config :joken, default_signer: "secret"
@@ -36,7 +36,7 @@ config :cors_plug,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :kodi_straga, KodiStraga.Mailer, adapter: Swoosh.Adapters.Local
+config :zulip_za_sirotinju, ZulipZaSirotinju.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configures Elixir's Logger
 config :logger, :console,

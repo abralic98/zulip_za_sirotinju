@@ -1,4 +1,4 @@
-# KodiStraga Elixir template
+# ZulipZaSirotinju Elixir template
 
 ## To run project follow this steps:
 
@@ -16,4 +16,4 @@
 
 ## Remote access to console on server
 
-`_build/prod/rel/kodi_straga/bin/kodi_straga remote`
+`_build/prod/rel/zulip_za_sirotinju/bin/zulip_za_sirotinju remote`

@@ -1,9 +1,9 @@
-defmodule KodiStragaWeb.Router do
-  use KodiStragaWeb, :router
+defmodule ZulipZaSirotinjuWeb.Router do
+  use ZulipZaSirotinjuWeb, :router
 
 
   pipeline :graphql do
-    plug KodiStragaWeb.Context
+    plug ZulipZaSirotinjuWeb.Context
   end
 
   scope "/api" do
@@ -19,7 +19,7 @@ defmodule KodiStragaWeb.Router do
   end
 
   # # Enable Swoosh mailbox preview in development
-  # if Application.compile_env(:kodi_straga, :dev_routes) do
+  # if Application.compile_env(:zulip_za_sirotinju, :dev_routes) do
 
   #   scope "/dev" do
   #     pipe_through [:fetch_session, :protect_from_forgery]

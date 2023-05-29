@@ -1,5 +1,5 @@
-defmodule KodiStragaWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :kodi_straga
+defmodule ZulipZaSirotinjuWeb.Endpoint do
+  use Phoenix.Endpoint, otp_app: :zulip_za_sirotinju
   use Absinthe.Phoenix.Endpoint
 
   # socket("/api/graphql/socket", SunnyDayWeb.GraphqlSocket,
@@ -15,7 +15,7 @@ defmodule KodiStragaWeb.Endpoint do
   # when deploying your static files in production.
   plug(Plug.Static,
     at: "/",
-    from: :kodi_straga,
+    from: :zulip_za_sirotinju,
     gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
   )
@@ -43,11 +43,11 @@ defmodule KodiStragaWeb.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   plug(Plug.Session,
     store: :cookie,
-    key: "_kodi_straga_key",
+    key: "_zulip_za_sirotinju_key",
     signing_salt: "CM8d23yMSxewv"
   )
 
-  plug(KodiStragaWeb.Router)
+  plug(ZulipZaSirotinjuWeb.Router)
 
   @doc """
   Callback invoked for dynamically configuring the endpoint.

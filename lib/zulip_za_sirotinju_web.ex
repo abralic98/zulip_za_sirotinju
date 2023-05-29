@@ -1,12 +1,12 @@
-defmodule KodiStragaWeb do
+defmodule ZulipZaSirotinjuWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, components, channels, and so on.
 
   This can be used in your application as:
 
-      use KodiStragaWeb, :controller
-      use KodiStragaWeb, :html
+      use ZulipZaSirotinjuWeb, :controller
+      use ZulipZaSirotinjuWeb, :html
 
   The definitions below will be executed for every controller,
   component, etc, so keep them short and clean, focused
@@ -39,10 +39,10 @@ defmodule KodiStragaWeb do
     quote do
       use Phoenix.Controller,
         formats: [:html, :json],
-        layouts: [html: KodiStragaWeb.Layouts]
+        layouts: [html: ZulipZaSirotinjuWeb.Layouts]
 
       import Plug.Conn
-      import KodiStragaWeb.Gettext
+      import ZulipZaSirotinjuWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -51,17 +51,17 @@ defmodule KodiStragaWeb do
   def verified_routes do
     quote do
       use Phoenix.VerifiedRoutes,
-        endpoint: KodiStragaWeb.Endpoint,
-        router: KodiStragaWeb.Router,
-        statics: KodiStragaWeb.static_paths()
+        endpoint: ZulipZaSirotinjuWeb.Endpoint,
+        router: ZulipZaSirotinjuWeb.Router,
+        statics: ZulipZaSirotinjuWeb.static_paths()
     end
   end
 
   @doc false
   def child_spec(_arg) do
     children = [
-      KodiStragaWeb.Endpoint
-      # {Absinthe.Subscription, KodiStragaWeb.Endpoint}
+      ZulipZaSirotinjuWeb.Endpoint
+      # {Absinthe.Subscription, ZulipZaSirotinjuWeb.Endpoint}
     ]
 
     %{

@@ -1,8 +1,8 @@
-defmodule KodiStragaWeb.Auth.CustomMiddleware do
+defmodule ZulipZaSirotinjuWeb.Auth.CustomMiddleware do
   defmacro __using__(_) do
     quote do
-      # alias KodiStragaWeb.API.Graphql.Middleware
-      alias KodiStragaWeb.Auth.RequireAuth
+      # alias ZulipZaSirotinjuWeb.API.Graphql.Middleware
+      alias ZulipZaSirotinjuWeb.Auth.RequireAuth
 
       def middleware(middleware, field, object) do
         if Enum.member?(

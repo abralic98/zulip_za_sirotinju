@@ -1,4 +1,4 @@
-defmodule KodiStraga.Application do
+defmodule ZulipZaSirotinju.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -9,22 +9,22 @@ defmodule KodiStraga.Application do
   def start(_type, _args) do
     # children = [
     #   # Start the Telemetry supervisor
-    #   KodiStragaWeb.Telemetry,
+    #   ZulipZaSirotinjuWeb.Telemetry,
     #   # Start the Ecto repository
-    #   KodiStraga.Repo,
+    #   ZulipZaSirotinju.Repo,
     #   # Start the PubSub system
-    #   {Phoenix.PubSub, name: KodiStraga.PubSub},
+    #   {Phoenix.PubSub, name: ZulipZaSirotinju.PubSub},
     #   # Start Finch
-    #   {Finch, name: KodiStraga.Finch},
+    #   {Finch, name: ZulipZaSirotinju.Finch},
     #   # Start the Endpoint (http/https)
-    #   KodiStragaWeb.Endpoint
-    #   # Start a worker by calling: KodiStraga.Worker.start_link(arg)
-    #   # {KodiStraga.Worker, arg}
+    #   ZulipZaSirotinjuWeb.Endpoint
+    #   # Start a worker by calling: ZulipZaSirotinju.Worker.start_link(arg)
+    #   # {ZulipZaSirotinju.Worker, arg}
     # ]
     Supervisor.start_link(
       [
-        KodiStraga,
-        KodiStragaWeb,
+        ZulipZaSirotinju,
+        ZulipZaSirotinjuWeb,
         {Task.Supervisor, name: GenericSupervisor}
       ],
       strategy: :one_for_one,
@@ -33,7 +33,7 @@ defmodule KodiStraga.Application do
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    # opts = [strategy: :one_for_one, name: KodiStraga.Supervisor]
+    # opts = [strategy: :one_for_one, name: ZulipZaSirotinju.Supervisor]
     # Supervisor.start_link(children, opts)
   end
 
@@ -41,7 +41,7 @@ defmodule KodiStraga.Application do
   # whenever the application is updated.
   @impl true
   def config_change(changed, _new, removed) do
-    KodiStragaWeb.Endpoint.config_change(changed, removed)
+    ZulipZaSirotinjuWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 end

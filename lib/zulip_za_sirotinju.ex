@@ -1,6 +1,6 @@
-defmodule KodiStraga do
+defmodule ZulipZaSirotinju do
   @moduledoc """
-  KodiStraga keeps the contexts that define your domain
+  ZulipZaSirotinju keeps the contexts that define your domain
   and business logic.
 
   Contexts are also responsible for managing your data, regardless
@@ -9,7 +9,7 @@ defmodule KodiStraga do
 
   def child_spec(_arg) do
     children = [
-      KodiStraga.Repo
+      ZulipZaSirotinju.Repo
       # SunnyDay.Workers.Mailer
     ]
 

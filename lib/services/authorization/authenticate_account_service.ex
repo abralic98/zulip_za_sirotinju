@@ -1,6 +1,6 @@
 defmodule Services.Authorization.AuthenticateAccountService do
   import Bcrypt, only: [verify_pass: 2, no_user_verify: 0]
-  alias KodiStraga.Repo
+  alias ZulipZaSirotinju.Repo
   alias Schemas.Account
 
   def execute(email, username, password) do

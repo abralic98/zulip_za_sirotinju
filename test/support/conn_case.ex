@@ -1,4 +1,4 @@
-defmodule KodiStragaWeb.ConnCase do
+defmodule ZulipZaSirotinjuWeb.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -19,18 +19,18 @@ defmodule KodiStragaWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       import Phoenix.ConnTest
-      import KodiStragaWeb.Router.Helpers
+      import ZulipZaSirotinjuWeb.Router.Helpers
 
       # The default endpoint for testing
-      @endpoint KodiStragaWeb.Endpoint
+      @endpoint ZulipZaSirotinjuWeb.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(KodiStraga.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(ZulipZaSirotinju.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(KodiStraga.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(ZulipZaSirotinju.Repo, {:shared, self()})
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}

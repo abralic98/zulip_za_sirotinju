@@ -1,4 +1,4 @@
-defmodule KodiStragaWeb.Auth.RequireAuth do
+defmodule ZulipZaSirotinjuWeb.Auth.RequireAuth do
   @behaviour Absinthe.Middleware
 
   alias Absinthe.Resolution

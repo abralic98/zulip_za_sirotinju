@@ -1,4 +1,4 @@
-defmodule KodiStragaWeb.Telemetry do
+defmodule ZulipZaSirotinjuWeb.Telemetry do
   use Supervisor
   import Telemetry.Metrics
 
@@ -52,23 +52,23 @@ defmodule KodiStragaWeb.Telemetry do
       ),
 
       # Database Metrics
-      summary("kodi_straga.repo.query.total_time",
+      summary("zulip_za_sirotinju.repo.query.total_time",
         unit: {:native, :millisecond},
         description: "The sum of the other measurements"
       ),
-      summary("kodi_straga.repo.query.decode_time",
+      summary("zulip_za_sirotinju.repo.query.decode_time",
         unit: {:native, :millisecond},
         description: "The time spent decoding the data received from the database"
       ),
-      summary("kodi_straga.repo.query.query_time",
+      summary("zulip_za_sirotinju.repo.query.query_time",
         unit: {:native, :millisecond},
         description: "The time spent executing the query"
       ),
-      summary("kodi_straga.repo.query.queue_time",
+      summary("zulip_za_sirotinju.repo.query.queue_time",
         unit: {:native, :millisecond},
         description: "The time spent waiting for a database connection"
       ),
-      summary("kodi_straga.repo.query.idle_time",
+      summary("zulip_za_sirotinju.repo.query.idle_time",
         unit: {:native, :millisecond},
         description:
           "The time the connection spent waiting before being checked out for the query"
@@ -86,7 +86,7 @@ defmodule KodiStragaWeb.Telemetry do
     [
       # A module, function and arguments to be invoked periodically.
       # This function must call :telemetry.execute/3 and a metric must be added above.
-      # {KodiStragaWeb, :count_users, []}
+      # {ZulipZaSirotinjuWeb, :count_users, []}
     ]
   end
 end

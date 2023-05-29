@@ -1,4 +1,4 @@
-defmodule KodiStraga.Repo.Migrations.CreateAccounts do
+defmodule ZulipZaSirotinju.Repo.Migrations.CreateAccounts do
   use Ecto.Migration
 
   def change do

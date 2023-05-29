@@ -1,9 +1,9 @@
-defmodule KodiStraga.MixProject do
+defmodule ZulipZaSirotinju.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :kodi_straga,
+      app: :zulip_za_sirotinju,
       version: "0.1.0",
       elixir: "~> 1.14.4",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -18,7 +18,7 @@ defmodule KodiStraga.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {KodiStraga.Application, []},
+      mod: {ZulipZaSirotinju.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -52,7 +52,7 @@ defmodule KodiStraga.MixProject do
       {:bcrypt_elixir, "~> 3.0"},
       {:cors_plug, "~> 3.0"},
       {:poison, "~> 5.0"},
-      {:hackney, "~> 1.18.1"}
+      {:hackney, "~> 1.18.1"},
     ]
   end
 

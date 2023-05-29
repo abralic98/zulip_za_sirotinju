@@ -1,7 +1,7 @@
 defmodule Graphql.Schemas.Schema do
   use Absinthe.Schema
   use Absinthe.Relay.Schema, :modern
-  use KodiStragaWeb.Auth.CustomMiddleware
+  use ZulipZaSirotinjuWeb.Auth.CustomMiddleware
 
   alias Graphql.Queries.{CurrentUser, HealthCheck}
   alias Graphql.Mutations.CreateSession
@@ -26,7 +26,7 @@ defmodule Graphql.Schemas.Schema do
     node field do
       resolve(fn
         %{type: :account, id: local_id}, _ ->
-          {:ok, KodiStraga.Repo.get(Schemas.Account, local_id)}
+          {:ok, ZulipZaSirotinju.Repo.get(Schemas.Account, local_id)}
 
         _, _ ->
           {:error, "Unknown node"}

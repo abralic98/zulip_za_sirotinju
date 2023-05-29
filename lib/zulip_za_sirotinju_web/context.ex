@@ -1,10 +1,10 @@
-defmodule KodiStragaWeb.Context do
+defmodule ZulipZaSirotinjuWeb.Context do
   @behaviour Plug
 
   import Plug.Conn
   import Ecto.Query, only: [where: 2]
 
-  alias KodiStraga.Repo
+  alias ZulipZaSirotinju.Repo
   alias Schemas.Account
 
   def init(opts), do: opts
