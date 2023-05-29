@@ -5,7 +5,7 @@ config :zulip_za_sirotinju, ZulipZaSirotinju.Repo,
   username: "user",
   password: "admin",
   hostname: "116.203.201.51",
-  database: "kodiui",
+  database: "zulip",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
