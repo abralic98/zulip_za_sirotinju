@@ -36,6 +36,11 @@ config :cors_plug,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
+
+# config :zulip_za_sirotinju,
+#        mailgun_domain: System.get_env("MAILGUN_DOMAIN"),
+#        mailgun_key: System.get_env("MAILGUN_API_KEY")
+
 config :zulip_za_sirotinju, ZulipZaSirotinju.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configures Elixir's Logger

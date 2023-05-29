@@ -9,6 +9,8 @@ config :zulip_za_sirotinju, ZulipZaSirotinjuWeb.Endpoint,
 
 config :logger, level: :info
 
+config :swoosh, local: true
+
 config :cors_plug,
   origin: [
     "http://116.203.201.51:4000",

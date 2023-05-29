@@ -4,9 +4,9 @@ defmodule Graphql.Schemas.Schema do
   use ZulipZaSirotinjuWeb.Auth.CustomMiddleware
 
   alias Graphql.Queries.{CurrentUser, HealthCheck}
-  alias Graphql.Mutations.CreateSession
+  alias Graphql.Mutations.{CreateSession, CreateAccount}
 
-  import_types(Graphql.Types.Inputs.{CreateSessionInput})
+  import_types(Graphql.Types.Inputs.{CreateSessionInput, CreateAccountInput})
   import_types(Graphql.Types.Objects.AccountType)
   import_types(Graphql.Types.Objects.CreateSessionType)
 
@@ -42,12 +42,19 @@ defmodule Graphql.Schemas.Schema do
     field :me, :account do
       resolve(&CurrentUser.call/3)
     end
+
   end
 
   mutation do
+    field :create_account, :account do
+      arg(:input, :create_account_input)
+      resolve(&CreateAccount.resolve/3)
+    end
+
     field :create_session, :session do
       arg(:input, :create_session_input)
       resolve(&CreateSession.resolve/3)
     end
+
   end
 end

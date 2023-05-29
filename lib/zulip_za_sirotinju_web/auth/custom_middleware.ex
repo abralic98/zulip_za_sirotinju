@@ -8,6 +8,8 @@ defmodule ZulipZaSirotinjuWeb.Auth.CustomMiddleware do
         if Enum.member?(
              [
                :create_session,
+               :create_account,
+               :id,
                :token
              ],
              field.identifier
