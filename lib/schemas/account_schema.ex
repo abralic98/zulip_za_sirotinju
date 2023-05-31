@@ -13,7 +13,7 @@ defmodule Schemas.Account do
     field(:first_name, :string)
     field(:last_name, :string)
     field(:username, :string)
-    field(:active, :boolean, default: false)
+    field(:active, :boolean, default: true)
 
     timestamps()
   end
