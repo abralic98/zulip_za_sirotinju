@@ -6,6 +6,7 @@ defmodule Graphql.Types.Objects.MessageType do
 
 
   object(:message) do
+    field(:id, :id)
     field(:text, :string)
     field(:account, :account)
     field(:room, :room)

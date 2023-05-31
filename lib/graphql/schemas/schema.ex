@@ -4,9 +4,9 @@ defmodule Graphql.Schemas.Schema do
   use ZulipZaSirotinjuWeb.Auth.CustomMiddleware
 
   alias Graphql.Queries.{CurrentUser, HealthCheck, GetRooms, GetAccounts, GetMessagesByRoomId}
-  alias Graphql.Mutations.{CreateSession, CreateAccount, CreateRoom, CreateMessage, UpdateRoom}
+  alias Graphql.Mutations.{CreateSession, CreateAccount, CreateRoom, CreateMessage, UpdateRoom, UpdateMessage, DeleteRoom, DeleteMessage}
 
-  import_types(Graphql.Types.Inputs.{CreateSessionInput, CreateAccountInput, CreateRoomInput})
+  import_types(Graphql.Types.Inputs.{CreateSessionInput, CreateAccountInput, CreateRoomInput, CreateMessageInput})
   import_types(Graphql.Types.Objects.AccountType)
   import_types(Graphql.Types.Objects.CreateSessionType)
   import_types(Graphql.Types.Objects.RoomType)
@@ -82,10 +82,25 @@ defmodule Graphql.Schemas.Schema do
       resolve(&UpdateRoom.resolve/3)
     end
 
+    field :delete_room, :room do
+      arg(:id, :id)
+      resolve(&DeleteRoom.resolve/2)
+    end
+
     field :create_message, :message do
-      arg(:text, non_null(:string))
-      arg(:room_id, non_null(:string))
+      arg(:input, :create_message_input)
       resolve(&CreateMessage.resolve/3)
+    end
+
+    field :update_message, :message do
+      arg(:id, :id)
+      arg(:input, :create_message_input)
+      resolve(&UpdateMessage.resolve/3)
+    end
+
+    field :delete_message, :message do
+      arg(:id, :id)
+      resolve(&DeleteMessage.resolve/2)
     end
 
   end
