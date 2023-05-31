@@ -60,8 +60,8 @@ defmodule ZulipZaSirotinjuWeb do
   @doc false
   def child_spec(_arg) do
     children = [
-      ZulipZaSirotinjuWeb.Endpoint
-      # {Absinthe.Subscription, ZulipZaSirotinjuWeb.Endpoint}
+      ZulipZaSirotinjuWeb.Endpoint,
+      {Absinthe.Subscription, ZulipZaSirotinjuWeb.Endpoint}
     ]
 
     %{

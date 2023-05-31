@@ -4,9 +4,27 @@ defmodule Graphql.Schemas.Schema do
   use ZulipZaSirotinjuWeb.Auth.CustomMiddleware
 
   alias Graphql.Queries.{CurrentUser, HealthCheck, GetRooms, GetAccounts, GetMessagesByRoomId}
-  alias Graphql.Mutations.{CreateSession, CreateAccount, CreateRoom, CreateMessage, UpdateRoom, UpdateMessage, DeleteRoom, DeleteMessage}
 
-  import_types(Graphql.Types.Inputs.{CreateSessionInput, CreateAccountInput, CreateRoomInput, CreateMessageInput})
+  alias Graphql.Mutations.{
+    CreateSession,
+    CreateAccount,
+    CreateRoom,
+    CreateMessage,
+    UpdateRoom,
+    UpdateMessage,
+    DeleteRoom,
+    DeleteMessage
+  }
+
+  alias Graphql.Topics
+
+  import_types(Graphql.Types.Inputs.{
+    CreateSessionInput,
+    CreateAccountInput,
+    CreateRoomInput,
+    CreateMessageInput
+  })
+
   import_types(Graphql.Types.Objects.AccountType)
   import_types(Graphql.Types.Objects.CreateSessionType)
   import_types(Graphql.Types.Objects.RoomType)
@@ -22,6 +40,25 @@ defmodule Graphql.Schemas.Schema do
       _, _ ->
         nil
     end)
+  end
+
+  subscription do
+    field :get_messages_by_room_id, :message do
+      arg(:id, non_null(:id))
+
+      config(fn args, _ ->
+        IO.inspect(args)
+        {:ok, topic: args}
+      end)
+
+      trigger(:create_message,
+        topic: fn new_message -> new_message end
+      )
+
+      resolve(fn new_message, _, _ ->
+        {:ok, new_message}
+      end)
+    end
   end
 
   query do
@@ -57,7 +94,6 @@ defmodule Graphql.Schemas.Schema do
       arg(:room_id, :id)
       resolve(&GetMessagesByRoomId.resolve/3)
     end
-
   end
 
   mutation do
@@ -87,6 +123,7 @@ defmodule Graphql.Schemas.Schema do
       resolve(&DeleteRoom.resolve/2)
     end
 
+    @desc "Create Message"
     field :create_message, :message do
       arg(:input, :create_message_input)
       resolve(&CreateMessage.resolve/3)
@@ -102,6 +139,5 @@ defmodule Graphql.Schemas.Schema do
       arg(:id, :id)
       resolve(&DeleteMessage.resolve/2)
     end
-
   end
 end

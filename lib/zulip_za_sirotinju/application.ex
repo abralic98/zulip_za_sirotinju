@@ -7,29 +7,25 @@ defmodule ZulipZaSirotinju.Application do
 
   @impl true
   def start(_type, _args) do
-    # children = [
-    #   # Start the Telemetry supervisor
-    #   ZulipZaSirotinjuWeb.Telemetry,
-    #   # Start the Ecto repository
-    #   ZulipZaSirotinju.Repo,
-    #   # Start the PubSub system
-    #   {Phoenix.PubSub, name: ZulipZaSirotinju.PubSub},
-    #   # Start Finch
-    #   {Finch, name: ZulipZaSirotinju.Finch},
-    #   # Start the Endpoint (http/https)
-    #   ZulipZaSirotinjuWeb.Endpoint
-    #   # Start a worker by calling: ZulipZaSirotinju.Worker.start_link(arg)
-    #   # {ZulipZaSirotinju.Worker, arg}
-    # ]
-    Supervisor.start_link(
-      [
-        ZulipZaSirotinju,
-        ZulipZaSirotinjuWeb,
-        {Task.Supervisor, name: GenericSupervisor}
-      ],
-      strategy: :one_for_one,
-      name: __MODULE__
-    )
+    children = [
+      # Start the Telemetry supervisor
+      # ZulipZaSirotinjuWeb.Telemetry,
+      # Start the Ecto repository
+      ZulipZaSirotinju.Repo,
+      # Start the PubSub system
+      {Phoenix.PubSub, name: ZulipZaSirotinju.PubSub},
+      # Start Finch
+      # {Finch, name: ZulipZaSirotinju.Finch},
+      # Start the Endpoint (http/https)
+      ZulipZaSirotinjuWeb.Endpoint,
+      # Start a worker by calling: ZulipZaSirotinju.Worker.start_link(arg)
+      # {ZulipZaSirotinju.Worker, arg}
+
+      {Absinthe.Subscription, pubsub: ZulipZaSirotinjuWeb.Endpoint}
+    ]
+
+    opts = [strategy: :one_for_one, name: ZulipZaSirotinju.Supervisor]
+    Supervisor.start_link(children, opts)
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
