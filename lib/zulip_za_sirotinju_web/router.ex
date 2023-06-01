@@ -5,9 +5,6 @@ defmodule ZulipZaSirotinjuWeb.Router do
   pipeline :graphql do
     plug ZulipZaSirotinjuWeb.Context
   end
-  pipeline :socket do
-    plug ZulipZaSirotinjuWeb.Context
-  end
 
   scope "/api" do
     scope "/graphql" do
