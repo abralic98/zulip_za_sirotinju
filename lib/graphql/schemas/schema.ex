@@ -42,27 +42,6 @@ defmodule Graphql.Schemas.Schema do
     end)
   end
 
-  # subscription do
-  #   field :get_messages_by_room_id, :message do
-  #     arg(:id, non_null(:id))
-  #     IO.puts("KITA")
-
-  #     config(fn args, _ ->
-  #       IO.inspect(args)
-  #       {:ok, topic: args}
-  #     end)
-
-  #     trigger(:create_message,
-  #       topic: fn new_message -> new_message end
-  #     )
-
-  #     resolve(fn new_message, _, _ ->
-  #       {:ok, new_message}
-  #     end)
-  #   end
-
-  # end
-
   subscription do
     field :get_messages_by_room_id, :message do
       arg(:id, non_null(:string))

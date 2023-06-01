@@ -10,16 +10,16 @@ defmodule ZulipZaSirotinju.GraphqlSocket do
 
   def connect(params, socket) do
     current_user = current_user(params)
-    IO.inspect(socket)
+    IO.puts("kita")
 
     socket =
-      AbsintheSocket.put_options(
-        socket,
-        [
-          current_user
-        ]
+      AbsintheSocket.put_options(socket,
+        context: %{
+          current_user: current_user
+        }
       )
 
+      IO.inspect(socket)
     {:ok, socket}
   end
 

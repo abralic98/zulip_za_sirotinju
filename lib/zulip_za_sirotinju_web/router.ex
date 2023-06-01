@@ -10,7 +10,7 @@ defmodule ZulipZaSirotinjuWeb.Router do
     scope "/graphql" do
       pipe_through(:graphql)
 
-      forward("/", Absinthe.Plug, schema: Graphql.Schemas.Schema, socket: ZulipZaSirotinju.GraphqlSocket  )
+      forward("/", Absinthe.Plug, schema: Graphql.Schemas.Schema, socket: ZulipZaSirotinju.GraphqlSocket)
     end
 
     if Mix.env() == :dev do
