@@ -17,6 +17,7 @@ config :zulip_za_sirotinju, ZulipZaSirotinjuWeb.Endpoint,
     formats: [json: ZulipZaSirotinjuWeb.ErrorJSON],
     layout: false
   ],
+  # pubsub_server: [name: ZulipZaSirotinju.PubSub, adapter: Phoenix.PubSub.PG2],
   pubsub_server: ZulipZaSirotinju.PubSub,
   live_view: [signing_salt: "CQU6u+//"]
 

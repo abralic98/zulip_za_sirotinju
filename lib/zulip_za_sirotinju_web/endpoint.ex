@@ -2,16 +2,16 @@ defmodule ZulipZaSirotinjuWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :zulip_za_sirotinju
   use Absinthe.Phoenix.Endpoint
 
-  # socket("/api/graphql/socket", SunnyDayWeb.GraphqlSocket,
-  #   websocket: true,
-  #   longpoll: false
-  # )
+  socket("/api/graphql/socket", ZulipZaSirotinju.GraphqlSocket,
+    websocket: true,
+    longpoll: false
+  )
 
   plug(CORSPlug)
 
   # Serve at "/" the static files from "priv/static" directory.
   #
-  # You should set gzip to true if you are running phoenix.digest
+  # You should set gzip to tiue if you are running phoenix.digest
   # when deploying your static files in production.
   plug(Plug.Static,
     at: "/",

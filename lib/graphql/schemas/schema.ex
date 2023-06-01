@@ -16,7 +16,7 @@ defmodule Graphql.Schemas.Schema do
     DeleteMessage
   }
 
-  alias Graphql.Topics
+  # alias Graphql.Topics
 
   import_types(Graphql.Types.Inputs.{
     CreateSessionInput,
@@ -42,21 +42,43 @@ defmodule Graphql.Schemas.Schema do
     end)
   end
 
+  # subscription do
+  #   field :get_messages_by_room_id, :message do
+  #     arg(:id, non_null(:id))
+  #     IO.puts("KITA")
+
+  #     config(fn args, _ ->
+  #       IO.inspect(args)
+  #       {:ok, topic: args}
+  #     end)
+
+  #     trigger(:create_message,
+  #       topic: fn new_message -> new_message end
+  #     )
+
+  #     resolve(fn new_message, _, _ ->
+  #       {:ok, new_message}
+  #     end)
+  #   end
+
+  # end
+
   subscription do
     field :get_messages_by_room_id, :message do
-      arg(:id, non_null(:id))
+      arg(:id, non_null(:string))
 
       config(fn args, _ ->
-        IO.inspect(args)
-        {:ok, topic: args}
+        {:ok, topic: "Room:#{args.id}"}
       end)
 
       trigger(:create_message,
-        topic: fn new_message -> new_message end
+        topic: fn message ->
+          "Message: #{message.id}"
+        end
       )
 
-      resolve(fn new_message, _, _ ->
-        {:ok, new_message}
+      resolve(fn message, _, _ ->
+        {:ok, message}
       end)
     end
   end
