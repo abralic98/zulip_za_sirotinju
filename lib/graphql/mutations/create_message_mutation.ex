@@ -11,7 +11,7 @@ defmodule Graphql.Mutations.CreateMessage do
       |> Repo.insert()
 
     Absinthe.Subscription.publish(ZulipZaSirotinjuWeb.Endpoint, message,
-      get_messages_by_room_id: "Room:#{message.room_id}"
+      get_messages_by_room_id_socket: "Room:#{message.room_id}"
     )
     {:ok, message}
   end

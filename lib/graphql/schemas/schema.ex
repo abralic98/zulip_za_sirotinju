@@ -4,6 +4,7 @@ defmodule Graphql.Schemas.Schema do
   use ZulipZaSirotinjuWeb.Auth.CustomMiddleware
 
   alias Graphql.Queries.{CurrentUser, HealthCheck, GetRooms, GetAccounts, GetMessagesByRoomId}
+  alias ZulipZaSirotinju.Repo
 
   alias Graphql.Mutations.{
     CreateSession,
@@ -15,6 +16,8 @@ defmodule Graphql.Schemas.Schema do
     DeleteRoom,
     DeleteMessage
   }
+
+  alias Schemas.Message
 
   # alias Graphql.Topics
 
@@ -43,7 +46,7 @@ defmodule Graphql.Schemas.Schema do
   end
 
   subscription do
-    field :get_messages_by_room_id, :message do
+    field :get_messages_by_room_id_socket, list_of(:message) do
       arg(:id, non_null(:string))
 
       config(fn args, _ ->
@@ -57,7 +60,10 @@ defmodule Graphql.Schemas.Schema do
       )
 
       resolve(fn message, _, _ ->
-        {:ok, message}
+        response =
+          Repo.all(Message)
+          |> Repo.preload(:account)
+        {:ok, response}
       end)
     end
   end
@@ -66,7 +72,7 @@ defmodule Graphql.Schemas.Schema do
     node field do
       resolve(fn
         %{type: :account, id: local_id}, _ ->
-          {:ok, ZulipZaSirotinju.Repo.get(Schemas.Account, local_id)}
+          {:ok, Repo.get(Schemas.Account, local_id)}
 
         _, _ ->
           {:error, "Unknown node"}
@@ -141,4 +147,5 @@ defmodule Graphql.Schemas.Schema do
       resolve(&DeleteMessage.resolve/2)
     end
   end
+
 end

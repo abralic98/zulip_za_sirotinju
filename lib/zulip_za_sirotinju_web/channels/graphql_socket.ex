@@ -8,23 +8,17 @@ defmodule ZulipZaSirotinju.GraphqlSocket do
   alias Absinthe.Phoenix.Socket, as: AbsintheSocket
   alias Schemas.Account
 
-  def connect(params, socket) do
+
+ def connect(params, socket) do
     current_user = current_user(params)
-    IO.puts("kita")
-
-    socket =
-      AbsintheSocket.put_options(socket,
-        context: %{
-          current_user: current_user
-        }
-      )
-
-      IO.inspect(socket)
+    socket = Absinthe.Phoenix.Socket.put_options(socket, context: %{
+      current_user: current_user
+    })
     {:ok, socket}
   end
 
-  defp current_user(id) do
-    {:ok, Repo.get(Account, 1)}
+  defp current_user(%{"account_id" => id}) do
+    Repo.get(Account, id)
   end
 
   def id(_socket), do: nil
