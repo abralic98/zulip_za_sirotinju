@@ -17,3 +17,4 @@
 ## Remote access to console on server
 
 `_build/prod/rel/zulip_za_sirotinju/bin/zulip_za_sirotinju remote`
+# zulip_za_sirotinju_fe
