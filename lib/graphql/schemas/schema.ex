@@ -43,11 +43,14 @@ defmodule Graphql.Schemas.Schema do
       _, _ ->
         nil
     end)
+
   end
 
   subscription do
     field :get_messages_by_room_id_socket, list_of(:message) do
       arg(:id, non_null(:string))
+      arg(:page, :string)
+      arg(:limit, :string)
 
       config(fn args, _ ->
         {:ok, topic: "Room:#{args.id}"}
@@ -61,8 +64,9 @@ defmodule Graphql.Schemas.Schema do
 
       resolve(fn message, _, _ ->
         response =
-          Repo.all(Message)
+          Repo.get(Message, message.id)
           |> Repo.preload(:account)
+
         {:ok, response}
       end)
     end
@@ -147,5 +151,4 @@ defmodule Graphql.Schemas.Schema do
       resolve(&DeleteMessage.resolve/2)
     end
   end
-
 end
