@@ -10,23 +10,33 @@ defmodule ZulipZaSirotinju.GraphqlSocket do
   alias Schemas.Account
 
   def connect(params, socket) do
-    {:ok, kurcinaa} = extract_token2(params)
-    kita = extract_token(kurcinaa)
+    {:ok, kurcinaa} = extract_token(params)
+    extracted_token = extract_token2(kurcinaa)
 
-    kurac11 =
-      case kita do
+    token =
+      case extracted_token do
         {:ok, token} -> token
         _ -> nil
       end
 
-    claims = Services.Token.verify_and_validate(kurac11, Services.Token.Signer.generate())
+    current_user_joken =
+      Services.Token.verify_and_validate(token, Services.Token.Signer.generate())
 
-    current_user = current_user(params)
+    account =
+      case current_user_joken do
+        {:ok, acc} -> acc
+        _ -> nil
+      end
+
+    account_id = account["account_id"]
+
+    current_account = current_user(account_id)
+    IO.inspect(current_account)
 
     socket =
       Absinthe.Phoenix.Socket.put_options(socket,
         context: %{
-          current_user: current_user
+          current_user: current_account
         }
       )
 
@@ -34,21 +44,17 @@ defmodule ZulipZaSirotinju.GraphqlSocket do
   end
 
   defp extract_token(params) do
-    # IO.puts("JEL USLO")
-    # IO.inspect(params)
-    token = String.replace_prefix(params, "Bearer ", "")
-    # IO.puts("JEL PROSLO")
-    # IO.inspect(token)
-    {:ok, token}
-  end
-
-  defp extract_token2(params) do
     token = Map.get(params, "Authorization")
     {:ok, token}
   end
 
+  defp extract_token2(params) do
+    token = String.replace_prefix(params, "Bearer ", "")
+    {:ok, token}
+  end
+
   defp current_user(id) do
-    Repo.get(Account, 1)
+    {:ok, Repo.get(Account, id)}
   end
 
   def id(_socket), do: nil
