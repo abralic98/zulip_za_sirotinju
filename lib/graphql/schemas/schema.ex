@@ -28,6 +28,7 @@ defmodule Graphql.Schemas.Schema do
     CreateMessageInput
   })
 
+  import_types(SunnyDayWeb.API.Graphql.Scalars.DateTime)
   import_types(Graphql.Types.Objects.AccountType)
   import_types(Graphql.Types.Objects.CreateSessionType)
   import_types(Graphql.Types.Objects.RoomType)
@@ -43,14 +44,11 @@ defmodule Graphql.Schemas.Schema do
       _, _ ->
         nil
     end)
-
   end
 
   subscription do
     field :get_messages_by_room_id_socket, list_of(:message) do
       arg(:id, non_null(:string))
-      arg(:page, :string)
-      arg(:limit, :string)
 
       config(fn args, _ ->
         {:ok, topic: "Room:#{args.id}"}
@@ -109,7 +107,7 @@ defmodule Graphql.Schemas.Schema do
 
   mutation do
     field :create_account, :account do
-      arg(:input, :create_account_input)
+      arg(:input, non_null(:create_account_input))
       resolve(&CreateAccount.resolve/3)
     end
 
