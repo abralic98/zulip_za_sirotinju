@@ -10,6 +10,7 @@ defmodule ZulipZaSirotinju.GraphqlSocket do
   alias Schemas.Account
 
   def connect(params, socket) do
+    IO.inspect(params, label: "JEBENI PARAMETRI")
     {:ok, kurcinaa} = extract_token(params)
     extracted_token = extract_token2(kurcinaa)
 
@@ -31,12 +32,17 @@ defmodule ZulipZaSirotinju.GraphqlSocket do
     account_id = account["account_id"]
 
     current_account = current_user(account_id)
-    IO.inspect(current_account)
+
+    without_ok =
+      case current_account do
+        {:ok, curr_acc} -> curr_acc
+        _ -> nil
+      end
 
     socket =
       Absinthe.Phoenix.Socket.put_options(socket,
         context: %{
-          current_user: current_account
+          current_user: without_ok
         }
       )
 
