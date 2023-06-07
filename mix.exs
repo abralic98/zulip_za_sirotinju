@@ -54,6 +54,7 @@ defmodule ZulipZaSirotinju.MixProject do
       {:cors_plug, "~> 3.0"},
       {:poison, "~> 5.0"},
       {:hackney, "~> 1.18.1"},
+      {:ecto_enum, "~> 1.4.0"}
     ]
   end
 

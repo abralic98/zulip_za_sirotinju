@@ -11,7 +11,6 @@ defmodule ZulipZaSirotinjuWeb.Auth.CustomMiddleware do
                :create_account,
                :id,
                :token,
-               :get_messages_by_room_id
              ],
              field.identifier
            ) or field.identifier === :session or

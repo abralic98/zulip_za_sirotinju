@@ -9,6 +9,7 @@ defmodule Graphql.Schemas.Schema do
   alias Graphql.Mutations.{
     CreateSession,
     CreateAccount,
+    UpdateAccountStatus,
     CreateRoom,
     CreateMessage,
     UpdateRoom,
@@ -19,7 +20,8 @@ defmodule Graphql.Schemas.Schema do
 
   alias Schemas.Message
 
-  # alias Graphql.Topics
+  # Enums
+  import_types(Graphql.Types.Enums)
 
   import_types(Graphql.Types.Inputs.{
     CreateSessionInput,
@@ -34,6 +36,7 @@ defmodule Graphql.Schemas.Schema do
   import_types(Graphql.Types.Objects.RoomType)
   import_types(Graphql.Types.Objects.MessageType)
 
+
   connection(node_type: :account)
 
   node interface do
@@ -47,7 +50,7 @@ defmodule Graphql.Schemas.Schema do
   end
 
   subscription do
-    field :get_messages_by_room_id_socket, list_of(:message) do
+    field :get_messages_by_room_id_socket, :message do
       arg(:id, non_null(:string))
 
       config(fn args, _ ->
@@ -68,6 +71,12 @@ defmodule Graphql.Schemas.Schema do
         {:ok, response}
       end)
     end
+
+    # field :get_accounts, list_of(:account) do
+    #   config (fn _, _) ->
+    #     {:ok, topic: "Account"}
+    #   end
+    # end
   end
 
   query do
@@ -109,6 +118,11 @@ defmodule Graphql.Schemas.Schema do
     field :create_account, :account do
       arg(:input, non_null(:create_account_input))
       resolve(&CreateAccount.resolve/3)
+    end
+
+    field :update_account_status, :account do
+      arg(:status, :account_status)
+      resolve(&UpdateAccountStatus.resolve/3)
     end
 
     field :create_session, :session do

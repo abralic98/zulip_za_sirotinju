@@ -4,7 +4,7 @@ defmodule Schemas.Account do
   import Bcrypt, only: [hash_pwd_salt: 1]
   import Ecto.Changeset
 
-  @changeset ~w(email password first_name last_name username active)a
+  @changeset ~w(email password first_name last_name username active status)a
 
   schema "accounts" do
     field(:email, :string)
@@ -14,6 +14,7 @@ defmodule Schemas.Account do
     field(:last_name, :string)
     field(:username, :string)
     field(:active, :boolean, default: true)
+    field :status, Ecto.Enum, values: [:online, :offline, :away, :busy]
 
     timestamps()
   end
