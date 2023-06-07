@@ -19,6 +19,7 @@ defmodule Graphql.Schemas.Schema do
   }
 
   alias Schemas.Message
+  alias Schemas.Account
 
   # Enums
   import_types(Graphql.Types.Enums)
@@ -36,7 +37,6 @@ defmodule Graphql.Schemas.Schema do
   import_types(Graphql.Types.Objects.RoomType)
   import_types(Graphql.Types.Objects.MessageType)
 
-
   connection(node_type: :account)
 
   node interface do
@@ -51,7 +51,7 @@ defmodule Graphql.Schemas.Schema do
 
   subscription do
     field :get_messages_by_room_id_socket, :message do
-      arg(:id, non_null(:string))
+      arg(:id, non_null(:id))
 
       config(fn args, _ ->
         {:ok, topic: "Room:#{args.id}"}
@@ -72,11 +72,23 @@ defmodule Graphql.Schemas.Schema do
       end)
     end
 
-    # field :get_accounts, list_of(:account) do
-    #   config (fn _, _) ->
-    #     {:ok, topic: "Account"}
-    #   end
-    # end
+    field :get_accounts, list_of(:account) do
+      config(fn _, _ ->
+        {:ok, topic: "Accounts"}
+      end)
+
+      trigger(:update_account_status,
+        topic: fn account ->
+          IO.inspect(account, label: "JELI TRIGERANO")
+          "Accounts"
+        end
+      )
+
+      resolve(fn account, _, _ ->
+        IO.inspect(account, label: "RESOLVER RASPALI")
+        {:ok, Repo.get(Account, account.id)}
+      end)
+    end
   end
 
   query do
