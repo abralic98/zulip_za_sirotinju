@@ -79,15 +79,10 @@ defmodule Graphql.Schemas.Schema do
 
       trigger(:update_account_status,
         topic: fn account ->
-          IO.inspect(account, label: "JELI TRIGERANO")
           "Accounts"
         end
       )
-
-      resolve(fn account, _, _ ->
-        IO.inspect(account, label: "RESOLVER RASPALI")
-        {:ok, Repo.get(Account, account.id)}
-      end)
+      resolve(&GetAccounts.resolve_subscription/3)
     end
   end
 
