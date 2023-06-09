@@ -20,6 +20,7 @@ defmodule Graphql.Schemas.Schema do
 
   alias Schemas.Message
   alias Schemas.Account
+  alias Schemas.Notification
 
   # Enums
   import_types(Graphql.Types.Enums)
@@ -36,6 +37,7 @@ defmodule Graphql.Schemas.Schema do
   import_types(Graphql.Types.Objects.CreateSessionType)
   import_types(Graphql.Types.Objects.RoomType)
   import_types(Graphql.Types.Objects.MessageType)
+  import_types(Graphql.Types.Objects.NotificationType)
 
   connection(node_type: :account)
 
@@ -67,7 +69,6 @@ defmodule Graphql.Schemas.Schema do
         response =
           Repo.get(Message, message.id)
           |> Repo.preload(:account)
-
         {:ok, response}
       end)
     end
@@ -82,7 +83,32 @@ defmodule Graphql.Schemas.Schema do
           "Accounts"
         end
       )
+
       resolve(&GetAccounts.resolve_subscription/3)
+    end
+
+    field :notifications, :notification do
+      config(fn _, _ ->
+        {:ok, topic: "Notifications"}
+      end)
+
+      trigger(:create_message,
+        topic: fn notification ->
+          "Notifications"
+        end
+      )
+
+      resolve(fn notification, _, _ ->
+        IO.inspect(notification, label: "NOTIFICAJ")
+
+        response =
+          Repo.get(Notification, notification.id)
+          |> Repo.preload(:account)
+          |> Repo.preload(:message)
+          |> Repo.preload(:room)
+
+        {:ok, response}
+      end)
     end
   end
 
