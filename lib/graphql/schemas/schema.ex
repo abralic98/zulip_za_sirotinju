@@ -21,6 +21,7 @@ defmodule Graphql.Schemas.Schema do
   alias Schemas.Message
   alias Schemas.Account
   alias Schemas.Notification
+  alias Schemas.Room
 
   # Enums
   import_types(Graphql.Types.Enums)
@@ -69,6 +70,7 @@ defmodule Graphql.Schemas.Schema do
         response =
           Repo.get(Message, message.id)
           |> Repo.preload(:account)
+
         {:ok, response}
       end)
     end
@@ -107,6 +109,26 @@ defmodule Graphql.Schemas.Schema do
           |> Repo.preload(:message)
           |> Repo.preload(:room)
 
+        {:ok, response}
+      end)
+    end
+
+    field :get_rooms_subscription, list_of(:room) do
+      config(fn _, _ ->
+        {:ok, topic: "Rooms"}
+      end)
+
+      trigger(:create_room,
+        topic: fn room ->
+
+        IO.inspect(room, label: "trigger")
+          "Rooms"
+        end
+      )
+
+      resolve(fn room, _, _ ->
+        IO.inspect(room, label: "RESOLVe")
+        response = Repo.all(Room)
         {:ok, response}
       end)
     end
