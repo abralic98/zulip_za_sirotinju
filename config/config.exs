@@ -31,6 +31,9 @@ config :cors_plug,
     "http://localhost:3002/",
     "http://localhost:3003/",
     "http://localhost:3003",
+    "http://localhost:3003",
+    "http://116.203.201.51:3000"
+    "http://116.203.201.51:3000/"
   ],
   methods: ["GET", "POST", "FETCH", "OPTIONS"]
 

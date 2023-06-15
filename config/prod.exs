@@ -14,6 +14,7 @@ config :swoosh, local: true
 config :cors_plug,
   origin: [
     "http://116.203.201.51:4000",
+    "http://116.203.201.51:4000/",
     "http://localhost:3002",
     "http://localhost:3003",
     "http://localhost:3003/",
