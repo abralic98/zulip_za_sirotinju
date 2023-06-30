@@ -41,11 +41,18 @@ defmodule Graphql.Schemas.Schema do
   import_types(Graphql.Types.Objects.NotificationType)
 
   connection(node_type: :account)
+  connection(node_type: :message)
 
   node interface do
     resolve_type(fn
       %Schemas.Account{}, _ ->
         :account
+
+      _, _ ->
+        nil
+
+      %Schemas.Message{}, _ ->
+        :message
 
       _, _ ->
         nil
@@ -120,8 +127,7 @@ defmodule Graphql.Schemas.Schema do
 
       trigger(:create_room,
         topic: fn room ->
-
-        IO.inspect(room, label: "trigger")
+          IO.inspect(room, label: "trigger")
           "Rooms"
         end
       )
@@ -135,16 +141,6 @@ defmodule Graphql.Schemas.Schema do
   end
 
   query do
-    node field do
-      resolve(fn
-        %{type: :account, id: local_id}, _ ->
-          {:ok, Repo.get(Schemas.Account, local_id)}
-
-        _, _ ->
-          {:error, "Unknown node"}
-      end)
-    end
-
     @desc "Health check"
 
     field :health_check, :boolean do
@@ -163,9 +159,25 @@ defmodule Graphql.Schemas.Schema do
       resolve(&GetAccounts.resolve/3)
     end
 
-    field :get_messages_by_room_id, list_of(:message) do
+    connection field :get_messages_by_room_id, node_type: :message do
       arg(:room_id, :id)
       resolve(&GetMessagesByRoomId.resolve/3)
+    end
+
+    node field do
+      resolve(fn
+        %{type: :message, id: local_id}, _ ->
+          {:ok, Repo.get(Schemas.Message, local_id)}
+
+        _, _ ->
+          {:error, "Unknown node"}
+
+        %{type: :account, id: local_id}, _ ->
+          {:ok, Repo.get(Schemas.Account, local_id)}
+
+        _, _ ->
+          {:error, "Unknown node"}
+      end)
     end
   end
 
