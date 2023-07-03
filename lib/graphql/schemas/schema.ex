@@ -77,6 +77,7 @@ defmodule Graphql.Schemas.Schema do
         response =
           Repo.get(Message, message.id)
           |> Repo.preload(:account)
+          |> Repo.preload(:room)
 
         {:ok, response}
       end)
@@ -101,21 +102,21 @@ defmodule Graphql.Schemas.Schema do
         {:ok, topic: "Notifications"}
       end)
 
-      trigger(:create_message,
-        topic: fn notification ->
-          "Notifications"
-        end
-      )
+      #zasto voo radi bez trigera pitaj boga vjerovatno zbog  createmessagemutation pogleda
+      # trigger(:create_message,
+      #   topic: fn notification ->
+      #     "Notifications"
+      #   end
+      # )
 
       resolve(fn notification, _, _ ->
-        IO.inspect(notification, label: "NOTIFICAJ")
-
         response =
           Repo.get(Notification, notification.id)
           |> Repo.preload(:account)
           |> Repo.preload(:message)
           |> Repo.preload(:room)
 
+        IO.inspect(response, label: "RESPONSE_________________________________________________________________________-----------------------------------")
         {:ok, response}
       end)
     end

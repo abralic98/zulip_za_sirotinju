@@ -10,7 +10,6 @@ defmodule ZulipZaSirotinju.GraphqlSocket do
   alias Schemas.Account
 
   def connect(params, socket) do
-    IO.inspect(params, label: "JEBENI PARAMETRI")
     {:ok, kurcinaa} = extract_token(params)
     extracted_token = extract_token2(kurcinaa)
 

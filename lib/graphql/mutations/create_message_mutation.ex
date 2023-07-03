@@ -35,7 +35,6 @@ defmodule Graphql.Mutations.CreateMessage do
     Absinthe.Subscription.publish(ZulipZaSirotinjuWeb.Endpoint, notification,
       notifications: "Notifications"
     )
-
     {:ok, notification}
   end
 end
