@@ -3,6 +3,7 @@ defmodule Graphql.Schemas.Schema do
   use Absinthe.Relay.Schema, :modern
   use ZulipZaSirotinjuWeb.Auth.CustomMiddleware
 
+  alias Graphql.Types.Inputs.CreateFileInput
   alias Graphql.Queries.{CurrentUser, HealthCheck, GetRooms, GetAccounts, GetMessagesByRoomId}
   alias ZulipZaSirotinju.Repo
 
@@ -15,7 +16,8 @@ defmodule Graphql.Schemas.Schema do
     UpdateRoom,
     UpdateMessage,
     DeleteRoom,
-    DeleteMessage
+    DeleteMessage,
+    UploadAvatar
   }
 
   alias Schemas.Message
@@ -30,7 +32,8 @@ defmodule Graphql.Schemas.Schema do
     CreateSessionInput,
     CreateAccountInput,
     CreateRoomInput,
-    CreateMessageInput
+    CreateMessageInput,
+    CreateFileInput
   })
 
   import_types(SunnyDayWeb.API.Graphql.Scalars.DateTime)
@@ -39,6 +42,7 @@ defmodule Graphql.Schemas.Schema do
   import_types(Graphql.Types.Objects.RoomType)
   import_types(Graphql.Types.Objects.MessageType)
   import_types(Graphql.Types.Objects.NotificationType)
+  import_types(Graphql.Types.Objects.FileType)
 
   connection(node_type: :account)
   connection(node_type: :message)
@@ -102,7 +106,7 @@ defmodule Graphql.Schemas.Schema do
         {:ok, topic: "Notifications"}
       end)
 
-      #zasto voo radi bez trigera pitaj boga vjerovatno zbog  createmessagemutation pogleda
+      # zasto voo radi bez trigera pitaj boga vjerovatno zbog  createmessagemutation pogleda
       # trigger(:create_message,
       #   topic: fn notification ->
       #     "Notifications"
@@ -116,7 +120,11 @@ defmodule Graphql.Schemas.Schema do
           |> Repo.preload(:message)
           |> Repo.preload(:room)
 
-        IO.inspect(response, label: "RESPONSE_________________________________________________________________________-----------------------------------")
+        IO.inspect(response,
+          label:
+            "RESPONSE_________________________________________________________________________-----------------------------------"
+        )
+
         {:ok, response}
       end)
     end
@@ -229,6 +237,11 @@ defmodule Graphql.Schemas.Schema do
     field :delete_message, :message do
       arg(:id, :id)
       resolve(&DeleteMessage.resolve/2)
+    end
+
+    field :upload_avatar, :avatar do
+      arg(:avatar, non_null(:create_file_input))
+      resolve(&UploadAvatar.resolve/3)
     end
   end
 end

@@ -23,6 +23,10 @@ config :zulip_za_sirotinju, ZulipZaSirotinjuWeb.Endpoint,
 
 config :joken, default_signer: "secret"
 
+config :waffle,
+  storage: Waffle.Storage.Local,
+  asset_host: {:system, "ASSET_HOST"}
+
 config :cors_plug,
   origin: [
     "http://localhost:3000/",
