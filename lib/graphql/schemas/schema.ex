@@ -4,7 +4,16 @@ defmodule Graphql.Schemas.Schema do
   use ZulipZaSirotinjuWeb.Auth.CustomMiddleware
 
   alias Graphql.Types.Inputs.CreateFileInput
-  alias Graphql.Queries.{CurrentUser, HealthCheck, GetRooms, GetAccounts, GetMessagesByRoomId}
+
+  alias Graphql.Queries.{
+    CurrentUser,
+    HealthCheck,
+    GetRooms,
+    GetAccounts,
+    GetMessagesByRoomId,
+    GetUserAvatar
+  }
+
   alias ZulipZaSirotinju.Repo
 
   alias Graphql.Mutations.{
@@ -120,11 +129,6 @@ defmodule Graphql.Schemas.Schema do
           |> Repo.preload(:message)
           |> Repo.preload(:room)
 
-        IO.inspect(response,
-          label:
-            "RESPONSE_________________________________________________________________________-----------------------------------"
-        )
-
         {:ok, response}
       end)
     end
@@ -166,6 +170,10 @@ defmodule Graphql.Schemas.Schema do
 
     field :get_accounts, list_of(:account) do
       resolve(&GetAccounts.resolve/3)
+    end
+
+    field :get_user_avatar, :avatar do
+      resolve(&GetUserAvatar.resolve/3)
     end
 
     connection field :get_messages_by_room_id, node_type: :message do

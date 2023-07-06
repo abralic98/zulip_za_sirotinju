@@ -3,13 +3,17 @@ defmodule Graphql.Mutations.UploadAvatar do
   alias ZulipZaSirotinju.Repo
 
   def resolve(_, %{avatar: create_file_input}, %{context: %{current_user: current_user}}) do
-
-    IO.inspect(create_file_input)
     modified = Map.put(create_file_input, :account_id, Map.get(current_user, :id))
-    IO.inspect(modified)
-    {:ok, avatar} =
-      %Avatar{}
-      |> Avatar.changeset(modified)
-      |> Repo.insert()
+
+    case Repo.get_by(Avatar, file_name: create_file_input.file_name) do
+      nil ->
+        {:ok, avatar} =
+          %Avatar{}
+          |> Avatar.changeset(modified)
+          |> Repo.insert()
+
+      existing_avatar ->
+        {:error, "Avatar Exists"}
+    end
   end
 end

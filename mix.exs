@@ -55,8 +55,6 @@ defmodule ZulipZaSirotinju.MixProject do
       {:poison, "~> 5.0"},
       {:hackney, "~> 1.18.1"},
       {:ecto_enum, "~> 1.4.0"},
-      {:waffle, "~> 1.1"},
-      {:waffle_ecto, "~> 0.0.11"}
     ]
   end
 
