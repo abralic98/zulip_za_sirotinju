@@ -176,6 +176,11 @@ defmodule Graphql.Schemas.Schema do
       resolve(&GetUserAvatar.resolve/3)
     end
 
+    field :get_user_avatar_id, :avatar do
+      arg(:user_id, non_null(:id))
+      resolve(&GetUserAvatar.resolve_other/3)
+    end
+
     connection field :get_messages_by_room_id, node_type: :message do
       arg(:room_id, :id)
       resolve(&GetMessagesByRoomId.resolve/3)
