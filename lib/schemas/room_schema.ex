@@ -4,11 +4,12 @@ defmodule Schemas.Room do
   import Ecto.Changeset
   alias Schemas.Message
 
-  @changeset ~w(name password)a
+  @changeset ~w(name password is_password_protected)a
 
   schema "rooms" do
     field :name, :string
     field :password, :string
+    field :is_password_protected, :boolean
     has_many :messages, Message
     timestamps()
   end
