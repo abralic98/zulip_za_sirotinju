@@ -5,6 +5,6 @@ defmodule Graphql.Types.Objects.RoomType do
   object(:room) do
     field(:id, :id)
     field(:name, :string)
-    field(:password, :string)
+    field(:is_password_protected, :boolean)
   end
 end

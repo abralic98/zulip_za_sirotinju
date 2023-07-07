@@ -28,7 +28,8 @@ defmodule Graphql.Schemas.Schema do
     DeleteRoom,
     DeleteMessage,
     UploadAvatar,
-    UpdateUser
+    UpdateUser,
+    AccessProtectedRoom
   }
 
   alias Schemas.Message
@@ -269,6 +270,12 @@ defmodule Graphql.Schemas.Schema do
     field :update_profile, :account do
       arg(:input, :update_profile_input)
       resolve(&UpdateUser.resolve/3)
+    end
+
+    field :access_protected_room, :boolean do
+      arg(:room_id, non_null(:id))
+      arg(:password, non_null(:string))
+      resolve(&AccessProtectedRoom.resolve/3)
     end
   end
 end
