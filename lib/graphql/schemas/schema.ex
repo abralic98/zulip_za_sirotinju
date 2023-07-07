@@ -3,6 +3,7 @@ defmodule Graphql.Schemas.Schema do
   use Absinthe.Relay.Schema, :modern
   use ZulipZaSirotinjuWeb.Auth.CustomMiddleware
 
+  alias Graphql.Types.Inputs.UpdateProfileInput
   alias Graphql.Types.Inputs.CreateFileInput
 
   alias Graphql.Queries.{
@@ -26,7 +27,8 @@ defmodule Graphql.Schemas.Schema do
     UpdateMessage,
     DeleteRoom,
     DeleteMessage,
-    UploadAvatar
+    UploadAvatar,
+    UpdateUser
   }
 
   alias Schemas.Message
@@ -42,7 +44,8 @@ defmodule Graphql.Schemas.Schema do
     CreateAccountInput,
     CreateRoomInput,
     CreateMessageInput,
-    CreateFileInput
+    CreateFileInput,
+    UpdateProfileInput
   })
 
   import_types(SunnyDayWeb.API.Graphql.Scalars.DateTime)
@@ -103,6 +106,12 @@ defmodule Graphql.Schemas.Schema do
 
       trigger(:update_account_status,
         topic: fn account ->
+          "Accounts"
+        end
+      )
+
+      trigger(:update_profile,
+        topic: fn _ ->
           "Accounts"
         end
       )
@@ -255,6 +264,11 @@ defmodule Graphql.Schemas.Schema do
     field :upload_avatar, :avatar do
       arg(:avatar, non_null(:create_file_input))
       resolve(&UploadAvatar.resolve/3)
+    end
+
+    field :update_profile, :account do
+      arg(:input, :update_profile_input)
+      resolve(&UpdateUser.resolve/3)
     end
   end
 end

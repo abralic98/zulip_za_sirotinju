@@ -5,6 +5,7 @@ defmodule Schemas.Account do
   import Ecto.Changeset
 
   @changeset ~w(email password first_name last_name username active status)a
+  @changeset_update ~w(email first_name last_name username)a
 
   schema "accounts" do
     field(:email, :string)
@@ -25,6 +26,11 @@ defmodule Schemas.Account do
     |> validate_email()
     |> validate_password()
     |> put_pass_digest
+  end
+
+  def changeset_update_account(account, args \\ %{}) do
+    account
+    |> cast(args, @changeset)
   end
 
   defp validate_email(changeset) do
