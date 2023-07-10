@@ -3,9 +3,6 @@ defmodule Graphql.Schemas.Schema do
   use Absinthe.Relay.Schema, :modern
   use ZulipZaSirotinjuWeb.Auth.CustomMiddleware
 
-  alias Graphql.Types.Inputs.UpdateProfileInput
-  alias Graphql.Types.Inputs.CreateFileInput
-
   alias Graphql.Queries.{
     CurrentUser,
     HealthCheck,
@@ -13,7 +10,8 @@ defmodule Graphql.Schemas.Schema do
     GetAccounts,
     GetMessagesByRoomId,
     GetUserAvatar,
-    GetUserConversations
+    GetUserConversations,
+    GetConversationRepliesByConversationId
   }
 
   alias ZulipZaSirotinju.Repo
@@ -58,9 +56,11 @@ defmodule Graphql.Schemas.Schema do
   import_types(Graphql.Types.Objects.NotificationType)
   import_types(Graphql.Types.Objects.FileType)
   import_types(Graphql.Types.Objects.ConversationType)
+  import_types(Graphql.Types.Objects.ConversationReplyType)
 
   connection(node_type: :account)
   connection(node_type: :message)
+  connection(node_type: :conversation_reply)
 
   node interface do
     resolve_type(fn
@@ -202,10 +202,30 @@ defmodule Graphql.Schemas.Schema do
       resolve(&GetMessagesByRoomId.resolve/3)
     end
 
+    connection field :get_conversation_replies_by_conversation_id, node_type: :conversation_reply do
+      arg(:conversation_id, :id)
+      resolve(&GetConversationRepliesByConversationId.resolve/3)
+    end
+
     node field do
       resolve(fn
         %{type: :message, id: local_id}, _ ->
           {:ok, Repo.get(Schemas.Message, local_id)}
+
+        _, _ ->
+          {:error, "Unknown node"}
+
+        %{type: :account, id: local_id}, _ ->
+          {:ok, Repo.get(Schemas.Account, local_id)}
+
+        _, _ ->
+          {:error, "Unknown node"}
+      end)
+
+
+      resolve(fn
+        %{type: :conversation_reply, id: local_id}, _ ->
+          {:ok, Repo.get(Schemas.ConversationReply, local_id)}
 
         _, _ ->
           {:error, "Unknown node"}

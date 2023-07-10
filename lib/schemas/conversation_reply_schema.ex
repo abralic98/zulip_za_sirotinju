@@ -7,10 +7,10 @@ defmodule Schemas.ConversationReply do
 
   @changeset ~w(text conversation_id account_id)a
 
-  schema "messages" do
+  schema "conversation_replies" do
     field(:text, :string)
     belongs_to :account, Account
-    belongs_to :conversation,
+    belongs_to :conversation, Conversation
     timestamps()
   end
 
