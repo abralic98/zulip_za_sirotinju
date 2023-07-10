@@ -12,7 +12,8 @@ defmodule Graphql.Schemas.Schema do
     GetRooms,
     GetAccounts,
     GetMessagesByRoomId,
-    GetUserAvatar
+    GetUserAvatar,
+    GetUserConversations
   }
 
   alias ZulipZaSirotinju.Repo
@@ -56,6 +57,7 @@ defmodule Graphql.Schemas.Schema do
   import_types(Graphql.Types.Objects.MessageType)
   import_types(Graphql.Types.Objects.NotificationType)
   import_types(Graphql.Types.Objects.FileType)
+  import_types(Graphql.Types.Objects.ConversationType)
 
   connection(node_type: :account)
   connection(node_type: :message)
@@ -191,6 +193,10 @@ defmodule Graphql.Schemas.Schema do
       resolve(&GetUserAvatar.resolve_other/3)
     end
 
+    field :get_user_conversations, list_of(:conversation) do
+      resolve(&GetUserConversations.resolve/3)
+    end
+
     connection field :get_messages_by_room_id, node_type: :message do
       arg(:room_id, :id)
       resolve(&GetMessagesByRoomId.resolve/3)
@@ -211,6 +217,7 @@ defmodule Graphql.Schemas.Schema do
           {:error, "Unknown node"}
       end)
     end
+
   end
 
   mutation do
