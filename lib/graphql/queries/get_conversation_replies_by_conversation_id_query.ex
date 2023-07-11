@@ -5,17 +5,15 @@ defmodule Graphql.Queries.GetConversationRepliesByConversationId do
   import Ecto.Query
   alias Absinthe.Relay.Connection
 
-  def resolve(_, args, %{context: %{current_user: current_user}}) do
-    IO.inspect(args)
-    conversation_replies =
-      ConversationReply
-      # |> where([cr], cr.conversation_id == 2)
-      |> order_by([p], desc: p.inserted_at)
-      # |> preload(:account)
-      |> Connection.from_query(
-        &Repo.all/1,
-        default_pagination(args)
-      )
+  def resolve(_, args, _) do
+    ConversationReply
+    |> where([cr], cr.conversation_id == ^args.conversation_id)
+    |> order_by([p], desc: p.inserted_at)
+    |> preload(:account)
+    |> Connection.from_query(
+      &Repo.all/1,
+      default_pagination(args)
+    )
   end
 
   defp default_pagination(%{:last => _} = data), do: data

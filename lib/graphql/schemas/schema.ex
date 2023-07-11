@@ -28,7 +28,9 @@ defmodule Graphql.Schemas.Schema do
     DeleteMessage,
     UploadAvatar,
     UpdateUser,
-    AccessProtectedRoom
+    AccessProtectedRoom,
+    CreateConversation,
+    CreateConversationReply
   }
 
   alias Schemas.Message
@@ -45,7 +47,8 @@ defmodule Graphql.Schemas.Schema do
     CreateRoomInput,
     CreateMessageInput,
     CreateFileInput,
-    UpdateProfileInput
+    UpdateProfileInput,
+    CreateConversationReplyInput
   })
 
   import_types(SunnyDayWeb.API.Graphql.Scalars.DateTime)
@@ -303,6 +306,16 @@ defmodule Graphql.Schemas.Schema do
       arg(:room_id, non_null(:id))
       arg(:password, non_null(:string))
       resolve(&AccessProtectedRoom.resolve/3)
+    end
+
+    field :create_conversation, :conversation do
+      arg(:user_two, non_null(:id))
+      resolve(&CreateConversation.resolve/3)
+    end
+
+    field :create_conversation_reply, :conversation_reply do
+      arg(:input, :create_conversation_reply_input)
+      resolve(&CreateConversationReply.resolve/3)
     end
   end
 end

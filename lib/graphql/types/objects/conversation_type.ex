@@ -5,7 +5,7 @@ defmodule Graphql.Types.Objects.ConversationType do
 
   object(:conversation) do
     field(:id, :id)
-    field(:user_one, :id)
-    field(:user_two, :id)
+    field(:user_one, :account)
+    field(:user_two, :account)
   end
 end

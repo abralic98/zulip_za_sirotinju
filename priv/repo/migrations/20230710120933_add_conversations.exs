@@ -3,8 +3,8 @@ defmodule ZulipZaSirotinju.Repo.Migrations.AddConversations do
 
   def change do
     create table(:conversations) do
-      add :user_one, :id
-      add :user_two, :id
+      add :user_one_id, references(:accounts, on_delete: :delete_all), null: false
+      add :user_two_id, references(:accounts, on_delete: :delete_all), null: false
       timestamps()
     end
   end
