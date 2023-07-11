@@ -14,6 +14,11 @@ defmodule Graphql.Schemas.Schema do
     GetConversationRepliesByConversationId
   }
 
+  alias Graphql.Subscriptions.{
+    GetConversationsSubscription,
+    GetConversationRepliesByConversationIdSubscription
+  }
+
   alias ZulipZaSirotinju.Repo
 
   alias Graphql.Mutations.{
@@ -34,7 +39,6 @@ defmodule Graphql.Schemas.Schema do
   }
 
   alias Schemas.Message
-  alias Schemas.Account
   alias Schemas.Notification
   alias Schemas.Room
 
@@ -81,6 +85,7 @@ defmodule Graphql.Schemas.Schema do
     end)
   end
 
+  @desc "Get Messages By Room Id Socket"
   subscription do
     field :get_messages_by_room_id_socket, :message do
       arg(:id, non_null(:id))
@@ -105,13 +110,14 @@ defmodule Graphql.Schemas.Schema do
       end)
     end
 
+    @desc "Get Accounts Socket"
     field :get_accounts, list_of(:account) do
       config(fn _, _ ->
         {:ok, topic: "Accounts"}
       end)
 
       trigger(:update_account_status,
-        topic: fn account ->
+        topic: fn _ ->
           "Accounts"
         end
       )
@@ -125,12 +131,14 @@ defmodule Graphql.Schemas.Schema do
       resolve(&GetAccounts.resolve_subscription/3)
     end
 
+    @desc "Get Public Notifications"
     field :notifications, :notification do
       config(fn _, _ ->
         {:ok, topic: "Notifications"}
       end)
 
-      # zasto voo radi bez trigera pitaj boga vjerovatno zbog  createmessagemutation pogleda
+      # primjer bez trigera u ovom fajlu ali zato u mutaciji ima triger ili ne?
+
       # trigger(:create_message,
       #   topic: fn notification ->
       #     "Notifications"
@@ -148,23 +156,55 @@ defmodule Graphql.Schemas.Schema do
       end)
     end
 
+    @desc "Get Rooms Socket"
     field :get_rooms_subscription, list_of(:room) do
       config(fn _, _ ->
         {:ok, topic: "Rooms"}
       end)
 
       trigger(:create_room,
-        topic: fn room ->
-          IO.inspect(room, label: "trigger")
+        topic: fn _ ->
           "Rooms"
         end
       )
 
-      resolve(fn room, _, _ ->
-        IO.inspect(room, label: "RESOLVe")
+      resolve(fn _, _, _ ->
         response = Repo.all(Room)
         {:ok, response}
       end)
+    end
+
+    @desc "Get User Private Conversations Socket"
+    field :get_conversations_subscription, list_of(:conversation) do
+      config(fn _, _ ->
+        {:ok, topic: "Conversations"}
+      end)
+
+      trigger(:create_conversation,
+        topic: fn _ ->
+          "Conversations"
+        end
+      )
+
+      resolve(&GetConversationsSubscription.resolve/3)
+    end
+
+
+    @desc "Get Conversation Reply Socket"
+    field :get_conversation_replies_by_conversation_id, :conversation_reply do
+      arg(:id, non_null(:id))
+
+      config(fn args, _ ->
+        {:ok, topic: "Conversation:#{args.id}"}
+      end)
+
+      trigger(:create_conversation_reply,
+        topic: fn conversation_reply ->
+          "Conversation: #{conversation_reply.id}"
+        end
+      )
+
+      resolve(&GetConversationRepliesByConversationIdSubscription.resolve/3)
     end
   end
 
@@ -175,36 +215,44 @@ defmodule Graphql.Schemas.Schema do
       resolve(&HealthCheck.resolve/3)
     end
 
+    @desc "Get User"
     field :me, :account do
       resolve(&CurrentUser.call/3)
     end
 
+    @desc "Get All Rooms"
     field :get_rooms, list_of(:room) do
       resolve(&GetRooms.resolve/3)
     end
 
+    @desc "Get All Accounts"
     field :get_accounts, list_of(:account) do
       resolve(&GetAccounts.resolve/3)
     end
 
+    @desc "Get User Avatar"
     field :get_user_avatar, :avatar do
       resolve(&GetUserAvatar.resolve/3)
     end
 
+    @desc "Get User Avatar Id"
     field :get_user_avatar_id, :avatar do
       arg(:user_id, non_null(:id))
       resolve(&GetUserAvatar.resolve_other/3)
     end
 
+    @desc "Get User Private Conversations"
     field :get_user_conversations, list_of(:conversation) do
       resolve(&GetUserConversations.resolve/3)
     end
 
+    @desc "Paginated Messages in Room"
     connection field :get_messages_by_room_id, node_type: :message do
       arg(:room_id, :id)
       resolve(&GetMessagesByRoomId.resolve/3)
     end
 
+    @desc "Paginated Private Messages in Conversation"
     connection field :get_conversation_replies_by_conversation_id, node_type: :conversation_reply do
       arg(:conversation_id, :id)
       resolve(&GetConversationRepliesByConversationId.resolve/3)
@@ -225,7 +273,6 @@ defmodule Graphql.Schemas.Schema do
           {:error, "Unknown node"}
       end)
 
-
       resolve(fn
         %{type: :conversation_reply, id: local_id}, _ ->
           {:ok, Repo.get(Schemas.ConversationReply, local_id)}
@@ -240,36 +287,41 @@ defmodule Graphql.Schemas.Schema do
           {:error, "Unknown node"}
       end)
     end
-
   end
 
   mutation do
+    @desc "Register"
     field :create_account, :account do
       arg(:input, non_null(:create_account_input))
       resolve(&CreateAccount.resolve/3)
     end
 
+    @desc "Update Account Status"
     field :update_account_status, :account do
       arg(:status, :account_status)
       resolve(&UpdateAccountStatus.resolve/3)
     end
 
+    @desc "Create Session"
     field :create_session, :session do
       arg(:input, :create_session_input)
       resolve(&CreateSession.resolve/3)
     end
 
+    @desc "Create Room"
     field :create_room, :room do
       arg(:input, :create_room_input)
       resolve(&CreateRoom.resolve/3)
     end
 
+    @desc "Update Room"
     field :update_room, :room do
       arg(:id, :id)
       arg(:input, :create_room_input)
       resolve(&UpdateRoom.resolve/3)
     end
 
+    @desc "Delete Room"
     field :delete_room, :room do
       arg(:id, :id)
       resolve(&DeleteRoom.resolve/2)
@@ -281,38 +333,45 @@ defmodule Graphql.Schemas.Schema do
       resolve(&CreateMessage.resolve/3)
     end
 
+    @desc "Update Message"
     field :update_message, :message do
       arg(:id, :id)
       arg(:input, :create_message_input)
       resolve(&UpdateMessage.resolve/3)
     end
 
+    @desc "Delete Message"
     field :delete_message, :message do
       arg(:id, :id)
       resolve(&DeleteMessage.resolve/2)
     end
 
+    @desc "Upload Image"
     field :upload_avatar, :avatar do
       arg(:avatar, non_null(:create_file_input))
       resolve(&UploadAvatar.resolve/3)
     end
 
+    @desc "Update Profile Info"
     field :update_profile, :account do
       arg(:input, :update_profile_input)
       resolve(&UpdateUser.resolve/3)
     end
 
+    @desc "Enter Protected Room"
     field :access_protected_room, :boolean do
       arg(:room_id, non_null(:id))
       arg(:password, non_null(:string))
       resolve(&AccessProtectedRoom.resolve/3)
     end
 
+    @desc "Create Private Conversation"
     field :create_conversation, :conversation do
       arg(:user_two, non_null(:id))
       resolve(&CreateConversation.resolve/3)
     end
 
+    @desc "Send Private Message"
     field :create_conversation_reply, :conversation_reply do
       arg(:input, :create_conversation_reply_input)
       resolve(&CreateConversationReply.resolve/3)

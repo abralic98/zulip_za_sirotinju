@@ -14,7 +14,16 @@ defmodule Graphql.Mutations.CreateConversation do
 
     case Repo.all(conversation_exists) do
       [] ->
-        {:ok, _} = %Conversation{} |> Conversation.changeset(input) |> Repo.insert()
+        {:ok, conversation} =
+          %Conversation{}
+          |> Conversation.changeset(input)
+          |> Repo.insert()
+
+        # Absinthe.Subscription.publish(ZulipZaSirotinjuWeb.Endpoint, conversation,
+        #   get_conversations_subscription: "Conversations"
+        # )
+
+        # {:ok, conversation}
 
       _ ->
         {:error, "Conversation already exists"}
