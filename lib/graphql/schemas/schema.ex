@@ -3,6 +3,7 @@ defmodule Graphql.Schemas.Schema do
   use Absinthe.Relay.Schema, :modern
   use ZulipZaSirotinjuWeb.Auth.CustomMiddleware
 
+
   alias Graphql.Queries.{
     CurrentUser,
     HealthCheck,
@@ -16,7 +17,8 @@ defmodule Graphql.Schemas.Schema do
 
   alias Graphql.Subscriptions.{
     GetConversationsSubscription,
-    GetConversationRepliesByConversationIdSubscription
+    GetConversationRepliesByConversationIdSubscription,
+    PrivateNotificationsSubscription
   }
 
   alias ZulipZaSirotinju.Repo
@@ -41,6 +43,8 @@ defmodule Graphql.Schemas.Schema do
   alias Schemas.Message
   alias Schemas.Notification
   alias Schemas.Room
+  alias Schemas.Conversation
+  alias Schemas.ConversationReply
 
   # Enums
   import_types(Graphql.Types.Enums)
@@ -64,6 +68,7 @@ defmodule Graphql.Schemas.Schema do
   import_types(Graphql.Types.Objects.FileType)
   import_types(Graphql.Types.Objects.ConversationType)
   import_types(Graphql.Types.Objects.ConversationReplyType)
+  import_types(Graphql.Types.Objects.PrivateNotificationType)
 
   connection(node_type: :account)
   connection(node_type: :message)
@@ -79,6 +84,12 @@ defmodule Graphql.Schemas.Schema do
 
       %Schemas.Message{}, _ ->
         :message
+
+      _, _ ->
+        nil
+
+      %Schemas.ConversationReply{}, _ ->
+        :conversation_reply
 
       _, _ ->
         nil
@@ -105,6 +116,30 @@ defmodule Graphql.Schemas.Schema do
           Repo.get(Message, message.id)
           |> Repo.preload(:account)
           |> Repo.preload(:room)
+
+        {:ok, response}
+      end)
+    end
+
+    @desc "Get Replies By Conversation Id Socket"
+    field :get_conversation_replies_by_conversation_id_socket, :conversation_reply do
+      arg(:id, non_null(:id))
+
+      config(fn args, _ ->
+        {:ok, topic: "Conversation:#{args.id}"}
+      end)
+
+      trigger(:create_conversation_reply,
+      topic: fn conversation_reply ->
+        "ConversationReply: #{conversation_reply.id}"
+      end
+      )
+
+      resolve(fn conversation_reply, _, _ ->
+        response =
+          Repo.get(ConversationReply, conversation_reply.id)
+          |> Repo.preload(:account)
+          |> Repo.preload(:conversation)
 
         {:ok, response}
       end)
@@ -137,14 +172,6 @@ defmodule Graphql.Schemas.Schema do
         {:ok, topic: "Notifications"}
       end)
 
-      # primjer bez trigera u ovom fajlu ali zato u mutaciji ima triger ili ne?
-
-      # trigger(:create_message,
-      #   topic: fn notification ->
-      #     "Notifications"
-      #   end
-      # )
-
       resolve(fn notification, _, _ ->
         response =
           Repo.get(Notification, notification.id)
@@ -154,6 +181,16 @@ defmodule Graphql.Schemas.Schema do
 
         {:ok, response}
       end)
+    end
+
+    @desc "Get Private Notifications"
+    field :private_notifications, :private_notification do
+      arg(:id, non_null(:id))
+      config(fn args, _ ->
+        {:ok, topic: "PrivateNotifications: #{args.id}"}
+      end)
+
+      resolve(&PrivateNotificationsSubscription.resolve/3)
     end
 
     @desc "Get Rooms Socket"
@@ -189,25 +226,7 @@ defmodule Graphql.Schemas.Schema do
       resolve(&GetConversationsSubscription.resolve/3)
     end
 
-
-    @desc "Get Conversation Reply Socket"
-    field :get_conversation_replies_by_conversation_id, :conversation_reply do
-      arg(:id, non_null(:id))
-
-      config(fn args, _ ->
-        {:ok, topic: "Conversation:#{args.id}"}
-      end)
-
-      trigger(:create_conversation_reply,
-        topic: fn conversation_reply ->
-          "Conversation: #{conversation_reply.id}"
-        end
-      )
-
-      resolve(&GetConversationRepliesByConversationIdSubscription.resolve/3)
-    end
   end
-
   query do
     @desc "Health check"
 
