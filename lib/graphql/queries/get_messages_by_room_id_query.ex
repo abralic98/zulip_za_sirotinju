@@ -10,7 +10,7 @@ defmodule Graphql.Queries.GetMessagesByRoomId do
       Message
       |> where([m], m.room_id == ^args.room_id)
       |> order_by([p], desc: p.inserted_at)
-      |> preload(:account)
+      |> preload(account: :avatar)
       |> Connection.from_query(
         &Repo.all/1,
         default_pagination(args)

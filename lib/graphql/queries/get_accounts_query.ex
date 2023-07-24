@@ -2,6 +2,7 @@ defmodule Graphql.Queries.GetAccounts do
   import Ecto.Query
   alias ZulipZaSirotinju.Repo
   alias Schemas.Account
+  alias Schemas.Avatar
 
   def resolve(_, _, _) do
     # response = Repo.all(Account)

@@ -1,6 +1,7 @@
 defmodule Graphql.Mutations.CreateConversationReply do
   alias ZulipZaSirotinju.Repo
   alias Schemas.ConversationReply
+  alias Schemas.Conversation
   alias Schemas.PrivateNotification
 
   def resolve(_, %{input: create_conversation_reply_input}, %{
@@ -19,7 +20,8 @@ defmodule Graphql.Mutations.CreateConversationReply do
       })
 
     Absinthe.Subscription.publish(ZulipZaSirotinjuWeb.Endpoint, conversation_reply,
-      get_conversation_replies_by_conversation_id_socket: "Conversation:#{conversation_reply.conversation_id}"
+      get_conversation_replies_by_conversation_id_socket:
+        "Conversation:#{conversation_reply.conversation_id}"
     )
 
     {:ok, conversation_reply}
@@ -31,12 +33,27 @@ defmodule Graphql.Mutations.CreateConversationReply do
       |> PrivateNotification.changeset(args)
       |> Repo.insert()
 
-      IO.inspect(args.account_id, label: "RESOLVE NOTIFI ARGS")
-      #problem
+    other_user =
+      case Repo.get_by(Conversation, id: args.conversation_id) do
+        nil ->
+          {:error, "Something Went Wrong"}
+
+        user ->
+          case user.user_one_id == args.account_id do
+            _ ->
+              {:ok, user.user_one_id}
+
+            _ ->
+              {:ok, user.user_two_id}
+          end
+      end
+
+    {:ok, id} = other_user
 
     Absinthe.Subscription.publish(ZulipZaSirotinjuWeb.Endpoint, private_notification,
-      private_notifications: "PrivateNotifications: #{args.account_id}"
+      private_notifications: "PrivateNotifications: #{id}"
     )
+
     {:ok, private_notification}
   end
 end

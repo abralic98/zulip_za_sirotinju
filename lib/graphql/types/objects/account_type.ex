@@ -10,5 +10,6 @@ defmodule Graphql.Types.Objects.AccountType do
     field(:first_name, :string)
     field(:last_name, :string)
     field(:status, :account_status)
+    field(:avatar, list_of(:avatar))
   end
 end

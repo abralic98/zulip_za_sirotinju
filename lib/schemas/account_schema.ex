@@ -1,4 +1,5 @@
 defmodule Schemas.Account do
+  alias Schemas.Avatar
   use Ecto.Schema
 
   import Bcrypt, only: [hash_pwd_salt: 1]
@@ -16,6 +17,7 @@ defmodule Schemas.Account do
     field(:username, :string)
     field(:active, :boolean, default: true)
     field :status, Ecto.Enum, values: [:online, :offline, :away, :busy]
+    has_many(:avatar, Avatar)
 
     timestamps()
   end

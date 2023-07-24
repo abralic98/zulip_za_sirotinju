@@ -114,7 +114,7 @@ defmodule Graphql.Schemas.Schema do
       resolve(fn message, _, _ ->
         response =
           Repo.get(Message, message.id)
-          |> Repo.preload(:account)
+          |> Repo.preload(account: :avatar)
           |> Repo.preload(:room)
 
         {:ok, response}
@@ -138,7 +138,7 @@ defmodule Graphql.Schemas.Schema do
       resolve(fn conversation_reply, _, _ ->
         response =
           Repo.get(ConversationReply, conversation_reply.id)
-          |> Repo.preload(:account)
+          |> Repo.preload(account: :avatar)
           |> Repo.preload(:conversation)
 
         {:ok, response}
